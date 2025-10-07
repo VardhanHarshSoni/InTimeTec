@@ -3,9 +3,9 @@
 #include <string.h>
 #define SIZE 100
 
-int calculateResult(int numbers[] , char operators[] , int n , int o) {
-    int i , j , result=0;
-    for (i = 0 ; i < o ; i++) {
+int calculateResult(int numbers[] , char operators[] , int numberOfNumbers , int numberOfOperators) {
+    int i , j , result = 0;
+    for (i = 0 ; i < numberOfOperators ; i++) {
         if (operators[i] == '/' || operators[i] == '*') {
             if (operators[i] == '/' && numbers[i + 1] == 0) {
                 printf(" Error: division by zero\n ");
@@ -19,19 +19,19 @@ int calculateResult(int numbers[] , char operators[] , int n , int o) {
 
             numbers[i] = result;
 
-            for ( j = i + 1 ; j < n - 1 ; j++)
+            for ( j = i + 1 ; j < numberOfNumbers - 1 ; j++)
                 numbers[j] = numbers[j + 1];
-            for (j = i ; j < o - 1 ; j++)
+            for (j = i ; j < numberOfOperators - 1 ; j++)
                 operators[j] = operators[j + 1];
 
-            n--;
-            o--;
+            numberOfNumbers--;
+            numberOfOperators--;
             i--;
         }
     }
 
     result = numbers[0];
-    for (i = 0; i < o; i++) {
+    for (i = 0; i < numberOfOperators; i++) {
         if (operators[i] == '+')
             result += numbers[i + 1];
         else
@@ -42,7 +42,7 @@ int calculateResult(int numbers[] , char operators[] , int n , int o) {
 
 int main() {
     char expression[SIZE];
-    char clearedexp[SIZE];
+    char clearedExpression[SIZE];
     printf("Enter the Expression: ");
     fgets(expression, sizeof(expression), stdin);
     expression[strcspn(expression, "\n")] = '\0';
@@ -50,33 +50,33 @@ int main() {
     int j = 0 , i;
     for (i = 0 ; expression[i] != '\0' ; i++) {
         if (!isspace(expression[i])) {
-            clearedexp[j++] = expression[i];
+            clearedExpression[j++] = expression[i];
         }
     }
-    clearedexp[j] = '\0';
+    clearedExpression[j] = '\0';
 
     if (j == 0) {
         printf("Error: Empty Expression \n");
         return 0;
     }
 
-    for (i = 0 ; clearedexp[i] != '\0' ; i++) {
-        if ( !isdigit(clearedexp[i]) && clearedexp[i] != '+' &&
-            clearedexp[i] != '-' && clearedexp[i] != '*' &&
-            clearedexp[i] != '/') {
+    for (i = 0 ; clearedExpression[i] != '\0' ; i++) {
+        if ( !isdigit(clearedExpression[i]) && clearedExpression[i] != '+' &&
+            clearedExpression[i] != '-' && clearedExpression[i] != '*' &&
+            clearedExpression[i] != '/') {
             printf(" Error: Invalid Expression \n ");
             return 0;
         }
     }
 
-    if (!isdigit(clearedexp[0]) || !isdigit(clearedexp[j - 1])) {
+    if (!isdigit(clearedExpression[0]) || !isdigit(clearedExpression[j - 1])) {
         printf("Error: Expression cannot start or end with an operator \n");
         return 0;
     }
 
-    for ( i = 0 ; clearedexp[i] != '\0' ; i++ ) {
-        if (!isdigit(clearedexp[i]) && clearedexp[i + 1] != '\0' &&
-            !isdigit(clearedexp[i + 1])) {
+    for ( i = 0 ; clearedExpression[i] != '\0' ; i++ ) {
+        if (!isdigit(clearedExpression[i]) && clearedExpression[i + 1] != '\0' &&
+            !isdigit(clearedExpression[i + 1])) {
             printf("Error: Consecutive operators not allowed \n");
             return 0;
         }
@@ -84,23 +84,24 @@ int main() {
 
     int numbers[SIZE];
     char operators[SIZE];
-    int n = 0, o = 0;
-    for ( i = 0 ; clearedexp[i] != '\0';) {
-        if (isdigit(clearedexp[i])) {
+    int numberOfNumbers = 0, numberOfOperators = 0;
+    for ( i = 0 ; clearedExpression[i] != '\0';) {
+        if (isdigit(clearedExpression[i])) {
             int num = 0;
-            while (isdigit(clearedexp[i])) {
-                num = num * 10 + (clearedexp[i] - '0');
+            while (isdigit(clearedExpression[i])) {
+                num = num * 10 + (clearedExpression[i] - '0');
                 i++;
             }
-            numbers[n++] = num;
+            numbers[numberOfNumbers++] = num;
         } else {
-            operators[o++] = clearedexp[i];
+            operators[numberOfOperators++] = clearedExpression[i];
             i++;
         }
     }
 
-    int result = calculateResult(numbers, operators , n , o);
+    int result = calculateResult(numbers, operators , numberOfNumbers , numberOfOperators);
     printf("Result: %d\n", result);
     return 0;
 }
+
 
