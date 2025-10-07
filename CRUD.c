@@ -10,25 +10,25 @@ typedef struct {
     int age;
 } User;
 
-int createFileIfNotExists(const char *filename) {
-    FILE *file = fopen(filename, "r");
+int createFileIfNotExists(const char *fileName) {
+    FILE *file = fopen(fileName, "r");
     if (file == NULL) {
-        file = fopen(filename, "w");
+        file = fopen(fileName, "w");
         if (file == NULL) {
             perror("Error creating file");
             return 1;
         }
         fprintf(file, " ID , Name , Age \n");
-        printf("File '%s' created successfully \n", filename);
+        printf("File '%s' created successfully \n", fileName);
     } else {
-        printf("File '%s' already exists \n", filename);
+        printf("File '%s' already exists \n", fileName);
     }
     fclose(file);
     return 0;
 }
 
-int userExistsOrNot( const char *filename, int id ) {
-    FILE *file = fopen(filename, "r");
+int userExistsOrNot( const char *fileName, int id ) {
+    FILE *file = fopen(fileName, "r");
     if (file == NULL){
     	return 0;
 	} 
@@ -47,7 +47,7 @@ int userExistsOrNot( const char *filename, int id ) {
     return 0;
 }
 
-int validatedIntegerValue(const char *prompt) {
+int validateIntegerValue(const char *prompt) {
     int num;
     char buffer[SIZE];
     while (1) {
@@ -77,10 +77,10 @@ int isValidName(const char *name) {
     return 1;
 }
 
-int createUser(const char *filename) {
+int createUser(const char *fileName) {
     User user;
-    user.id = validatedIntegerValue("Enter ID: ");
-    if (userExistsOrNot(filename, user.id)) {
+    user.id = validateIntegerValue("Enter ID: ");
+    if (userExistsOrNot(fileName, user.id)) {
         printf("Error: User with ID %d already exists \n", user.id );
         return 1;
     }
@@ -92,12 +92,12 @@ int createUser(const char *filename) {
     	fgets(user.name, sizeof(user.name), stdin);
     	user.name[strcspn(user.name, "\n")] = '\0';
 	}
-    user.age = validatedIntegerValue("Enter Age: ");
+    user.age = validateIntegerValue("Enter Age: ");
     if (user.age <= 0) {
         printf("Invalid Age \n");
         return 1;
     }
-    FILE *file = fopen(filename, "a");
+    FILE *file = fopen(fileName, "a");
     if (file == NULL) {
         perror("Error opening file");
         return 1;
@@ -108,8 +108,8 @@ int createUser(const char *filename) {
     return 0;
 }
 
-void readUsers(const char *filename) {
-    FILE *file = fopen(filename, "r");
+void readUsers(const char *fileName) {
+    FILE *file = fopen(fileName, "r");
     if (file == NULL) {
         perror("Error opening file");
         return;
@@ -122,19 +122,19 @@ void readUsers(const char *filename) {
     fclose(file);
 }
 
-void updateUser(const char *filename) {
-    int searchId = validatedIntegerValue("Enter User ID to update: ");
-    FILE *file = fopen(filename, "r");
-    FILE *temp = fopen("temp.txt", "w");
-    if (file == NULL || temp == NULL) {
+void updateUser(const char *fileName) {
+    int searchId = validateIntegerValue("Enter User ID to update: ");
+    FILE *Ptrfile = fopen(fileName, "r");
+    FILE *Ptrtemp = fopen("temp.txt", "w");
+    if (Ptrfile == NULL || Ptrtemp == NULL) {
         perror("Error opening file");
         return 1;
     }
     char line[SIZE];
     int found = 0;
-    if (fgets(line, sizeof(line), file))
-        fputs(line, temp);
-    while (fgets(line, sizeof(line), file)) {
+    if (fgets(line, sizeof(line), Ptrfile))
+        fputs(line, Ptrtemp);
+    while (fgets(line, sizeof(line), Ptrfile)) {
         User user;
         if (sscanf(line , "%d , %99[^,] , %d" , &user.id, user.name, &user.age) == 3) {
             if (user.id == searchId) {
@@ -147,44 +147,44 @@ void updateUser(const char *filename) {
     				fgets(user.name, sizeof(user.name), stdin);
     				user.name[strcspn(user.name, "\n")] = '\0';
 				}
-                user.age = validatedIntegerValue("Enter new Age: ");
+                user.age = validateIntegerValue("Enter new Age: ");
                 if (user.age <= 0) {
                     printf("Invalid Age \n");
-                    fclose(file);
-                    fclose(temp);
+                    fclose(Ptrfile);
+                    fclose(Ptrtemp);
                     remove("temp.txt");
                     return;
                 }
-                fprintf(temp, "%d, %s, %d \n" , user.id, user.name, user.age);
+                fprintf(Ptrtemp, "%d, %s, %d \n" , user.id, user.name, user.age);
                 printf("User with ID %d updated successfully \n", user.id);
             } else {
-                fputs(line, temp); 
+                fputs(line, Ptrtemp); 
             }
         } else {
-            fputs(line, temp);
+            fputs(line, Ptrtemp);
         }
     }
-    fclose(file);
-    fclose(temp);
-    remove(filename);
-    rename("temp.txt", filename);
+    fclose(Ptrfile);
+    fclose(Ptrtemp);
+    remove(fileName);
+    rename("temp.txt", fileName);
     if (!found)
         printf("User with ID %d not found \n", searchId);
 }
 
-void deleteUser(const char *filename) {
-    int searchId = validatedIntegerValue("Enter User ID to delete: ");
-    FILE *file = fopen(filename, "r");
-    FILE *temp = fopen("temp.txt", "w");
-    if (file == NULL || temp == NULL) {
+void deleteUser(const char *fileName) {
+    int searchId = validateIntegerValue("Enter User ID to delete: ");
+    FILE *Ptrfile = fopen(fileName, "r");
+    FILE *Ptrtemp = fopen("temp.txt", "w");
+    if (Ptrfile == NULL || Ptrtemp == NULL) {
         perror("Error opening file");
         return;
     }
     char line[SIZE];
     int found = 0;
-    if (fgets(line, sizeof(line), file))
-        fputs(line, temp);
-    while (fgets(line, sizeof(line), file)) {
+    if (fgets(line, sizeof(line), Ptrfile))
+        fputs(line, Ptrtemp);
+    while (fgets(line, sizeof(line), Ptrfile)) {
         User user;
         if (sscanf(line, "%d , %99[^,] , %d", &user.id, user.name, &user.age) == 3) {
             if (user.id == searchId) {
@@ -193,20 +193,20 @@ void deleteUser(const char *filename) {
                 continue;
             }
         }
-        fputs(line, temp);
+        fputs(line, Ptrtemp);
     }
-    fclose(file);
-    fclose(temp);
-    remove(filename);
-    rename("temp.txt", filename);
+    fclose(Ptrfile);
+    fclose(Ptrtemp);
+    remove(fileName);
+    rename("temp.txt", fileName);
     if (!found)
         printf(" User with ID %d not found \n ", searchId);
 }
 
 int main() {
-    const char *filename = "users.txt";
+    const char *fileName = "users.txt";
     int choice;
-    createFileIfNotExists(filename);
+    createFileIfNotExists(fileName);
     do {
         printf("1. Create User\n");
         printf("2. Read Users\n");
@@ -214,15 +214,15 @@ int main() {
         printf("4. Delete User\n");
         printf("5. Exit\n");
         printf("Enter your choice: ");
-        choice = validatedIntegerValue("");
+        choice = validateIntegerValue("");
         switch (choice) {
-            case 1: createUser(filename); 
+            case 1: createUser(fileName); 
 					break;
-            case 2: readUsers(filename); 
+            case 2: readUsers(fileName); 
 					break;
-            case 3: updateUser(filename); 
+            case 3: updateUser(fileName); 
 					break;
-            case 4: deleteUser(filename); 
+            case 4: deleteUser(fileName); 
 					break;
             case 5: printf(" Exiting program \n "); 
 					break;
@@ -231,3 +231,4 @@ int main() {
     } while (choice != 5);
     return 0;
 }
+
