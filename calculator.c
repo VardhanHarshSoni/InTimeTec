@@ -4,7 +4,7 @@
 #define SIZE 100
 
 int calculateResult(int numbers[] , char operators[] , int n , int o) {
-    int i , j , result;
+    int i , j , result=0;
     for (i = 0 ; i < o ; i++) {
         if (operators[i] == '/' || operators[i] == '*') {
             if (operators[i] == '/' && numbers[i + 1] == 0) {
@@ -103,3 +103,4 @@ int main() {
     printf("Result: %d\n", result);
     return 0;
 }
+
