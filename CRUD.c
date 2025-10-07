@@ -124,17 +124,17 @@ void readUsers(const char *fileName) {
 
 void updateUser(const char *fileName) {
     int searchId = validateIntegerValue("Enter User ID to update: ");
-    FILE *Ptrfile = fopen(fileName, "r");
-    FILE *Ptrtemp = fopen("temp.txt", "w");
-    if (Ptrfile == NULL || Ptrtemp == NULL) {
+    FILE *filePtr = fopen(fileName, "r");
+    FILE *tempPtr = fopen("temp.txt", "w");
+    if (filePtr == NULL || tempPtr == NULL) {
         perror("Error opening file");
         return 1;
     }
     char line[SIZE];
     int found = 0;
-    if (fgets(line, sizeof(line), Ptrfile))
-        fputs(line, Ptrtemp);
-    while (fgets(line, sizeof(line), Ptrfile)) {
+    if (fgets(line, sizeof(line), filePtr))
+        fputs(line, tempPtr);
+    while (fgets(line, sizeof(line), filePtr)) {
         User user;
         if (sscanf(line , "%d , %99[^,] , %d" , &user.id, user.name, &user.age) == 3) {
             if (user.id == searchId) {
@@ -150,22 +150,22 @@ void updateUser(const char *fileName) {
                 user.age = validateIntegerValue("Enter new Age: ");
                 if (user.age <= 0) {
                     printf("Invalid Age \n");
-                    fclose(Ptrfile);
-                    fclose(Ptrtemp);
+                    fclose(filePtr);
+                    fclose(tempPtr);
                     remove("temp.txt");
                     return;
                 }
-                fprintf(Ptrtemp, "%d, %s, %d \n" , user.id, user.name, user.age);
+                fprintf(tempPtr, "%d, %s, %d \n" , user.id, user.name, user.age);
                 printf("User with ID %d updated successfully \n", user.id);
             } else {
-                fputs(line, Ptrtemp); 
+                fputs(line, tempPtr); 
             }
         } else {
-            fputs(line, Ptrtemp);
+            fputs(line, tempPtr);
         }
     }
-    fclose(Ptrfile);
-    fclose(Ptrtemp);
+    fclose(filePtr);
+    fclose(tempPtr);
     remove(fileName);
     rename("temp.txt", fileName);
     if (!found)
@@ -174,17 +174,17 @@ void updateUser(const char *fileName) {
 
 void deleteUser(const char *fileName) {
     int searchId = validateIntegerValue("Enter User ID to delete: ");
-    FILE *Ptrfile = fopen(fileName, "r");
-    FILE *Ptrtemp = fopen("temp.txt", "w");
-    if (Ptrfile == NULL || Ptrtemp == NULL) {
+    FILE *filePtr = fopen(fileName, "r");
+    FILE *tempPtr = fopen("temp.txt", "w");
+    if (filePtr == NULL || tempPtr == NULL) {
         perror("Error opening file");
         return;
     }
     char line[SIZE];
     int found = 0;
-    if (fgets(line, sizeof(line), Ptrfile))
-        fputs(line, Ptrtemp);
-    while (fgets(line, sizeof(line), Ptrfile)) {
+    if (fgets(line, sizeof(line), filePtr))
+        fputs(line, tempPtr);
+    while (fgets(line, sizeof(line), filePtr)) {
         User user;
         if (sscanf(line, "%d , %99[^,] , %d", &user.id, user.name, &user.age) == 3) {
             if (user.id == searchId) {
@@ -193,10 +193,10 @@ void deleteUser(const char *fileName) {
                 continue;
             }
         }
-        fputs(line, Ptrtemp);
+        fputs(line, tempPtr);
     }
-    fclose(Ptrfile);
-    fclose(Ptrtemp);
+    fclose(filePtr);
+    fclose(tempPtr);
     remove(fileName);
     rename("temp.txt", fileName);
     if (!found)
@@ -231,4 +231,5 @@ int main() {
     } while (choice != 5);
     return 0;
 }
+
 
