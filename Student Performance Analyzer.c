@@ -8,13 +8,16 @@
 
 #define MAX_STUDENTS 100
 #define MAX_NAME_LEN 100
-#define LINE_BUF 256
-#define MARKS 3
+#define MAX_INPUT_LENGTH 256
+#define NUMBER_OF_SUBJECTS 3
+#define PARSE_SUCCESS 1
+#define PARSE_FAILURE 0
+
 
 struct Student {
-    int roll;
+    int rollNumber;
     char name[MAX_NAME_LEN];
-    float marks[MARKS];
+    float marks[NUMBER_OF_SUBJECTS];
     float total;
     float average;
     char grade;
@@ -53,21 +56,21 @@ int parseFloat(const char *s, float *out) {
     while (*endptr && isspace((unsigned char)*endptr)) 
 		endptr++;
     if (*endptr != '\0') 
-		return 0;        
+		return PARSE_FAILURE;        
     if (errno == ERANGE) 
-		return 0;
+		return PARSE_FAILURE;
     *out = val;
-    return 1;
+    return PARSE_SUCCESS;
 }
 
 
-int isValidName(const char *s) {
-    if (s == NULL) return 0;
-    int len = (int)strlen(s);
+int isValidName(const char *userEnteredString) {
+    if (userEnteredString == NULL) return 0;
+    int len = (int)strlen(userEnteredString);
     if (len == 0) return 0;
     int hasLetter = 0 , i;
     for ( i = 0; i < len; ++i) {
-        unsigned char ch = (unsigned char)s[i];
+        unsigned char ch = (unsigned char)userEnteredString[i];
         if (isalpha(ch)) 
 			hasLetter = 1;
         else if (ch == ' ' || ch == '\t') 
@@ -78,15 +81,15 @@ int isValidName(const char *s) {
 }
 
 
-float calculateTotal(float marks[], int n) {
+float calculateTotal(float marks[], int numberOfSubjects) {
     float total = 0.0f;
     int i;
-    for ( i = 0; i < n; ++i) total += marks[i];
+    for ( i = 0; i < numberOfSubjects; ++i) total += marks[i];
     return total;
 }
 
-float calculateAverage(float total, int n) {
-    return total / n;
+float calculateAverage(float total, int numberOfSubjects) {
+    return total / numberOfSubjects;
 }
 
 char assignGrade(float average) {
@@ -126,24 +129,24 @@ void printRollNumbersRecursively(int current, int totalStudents) {
 
 int main(void) {
     struct Student students[MAX_STUDENTS];
-    char line[LINE_BUF];
-    int n = 0;
+    char line[MAX_INPUT_LENGTH];
+    int numberOfStudents = 0;
     
     while (1) {
         printf("Enter number of students (1-%d): ", MAX_STUDENTS);
         readLine(line, sizeof(line));
-        if (parseInt(line, &n) && n >= 1 && n <= MAX_STUDENTS) break;
+        if (parseInt(line, &numberOfStudents) && numberOfStudents >= 1 && numberOfStudents <= MAX_STUDENTS) break;
         printf("Invalid input. Please enter an integer between 1 and %d.\n", MAX_STUDENTS);
     }
 	int i;
-    for ( i = 0; i < n; ++i) {
+    for ( i = 0; i < numberOfStudents; ++i) {
         printf("\nEnter details for student %d:\n", i + 1);
 
         
         while (1) {
             printf("Roll Number (>0): ");
             readLine(line, sizeof(line));
-            if (parseInt(line, &students[i].roll) && students[i].roll > 0) 
+            if (parseInt(line, &students[i].rollNumber) && students[i].rollNumber > 0) 
 				break;
             printf("Invalid roll. Roll number must be an integer greater than 0.\n");
         }
@@ -177,9 +180,8 @@ int main(void) {
     }
 
     
-    //printf("\n--- Student Performance Report ---\n");
-    for ( i = 0; i < n; ++i) {
-        printf("\nRoll: %d\n", students[i].roll);
+    for ( i = 0; i < numberOfStudents; ++i) {
+        printf("\nRoll: %d\n", students[i].rollNumber);
         printf("Name: %s\n", students[i].name);
 
         if (fabsf(students[i].total - roundf(students[i].total)) < 1e-6f) 
@@ -198,7 +200,7 @@ int main(void) {
     }
 
     printf("\nList of Roll Numbers (via recursion): ");
-    printRollNumbersRecursively(1, n);
+    printRollNumbersRecursively(1, numberOfStudents);
     printf("\n");
 
     return 0;
