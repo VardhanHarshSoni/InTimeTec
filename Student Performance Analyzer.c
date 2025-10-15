@@ -87,14 +87,14 @@ int isValidName(const char *name) {
     return hasLetter;
 }
 
-float calculateTotal(float marks[], int numberOfSubjects) {
+float calculateTotalMarks(float marks[], int numberOfSubjects) {
     float total = 0.0f;
     int index;
     for (index = 0; index < numberOfSubjects; ++index) total += marks[index];
     return total;
 }
 
-float calculateAverage(float total, int numberOfSubjects) {
+float calculateAverageMarks(float total, int numberOfSubjects) {
     return total / numberOfSubjects;
 }
 
@@ -139,7 +139,7 @@ void printRollNumbers(int currentRollNumber , int numberOfStudents) {
 }
 
 
-void inputStudents(struct Student students[], int numberOfStudents) {
+void getStudentData(struct Student students[], int numberOfStudents) {
     char line[MAX_INPUT_LENGTH];
     int index, j;
     for (index = 0; index < numberOfStudents; ++index) {
@@ -174,14 +174,14 @@ void inputStudents(struct Student students[], int numberOfStudents) {
             }
         }
 
-        students[index].totalMarks = calculateTotal(students[index].marks, NUMBER_OF_SUBJECTS);
-        students[index].averageMarks = calculateAverage(students[index].totalMarks, NUMBER_OF_SUBJECTS);
+        students[index].totalMarks = calculateTotalMarks(students[index].marks, NUMBER_OF_SUBJECTS);
+        students[index].averageMarks = calculateAverageMarks(students[index].totalMarks, NUMBER_OF_SUBJECTS);
         students[index].studentGrade = getGradeLetter(assignGrade(students[index].averageMarks));
     }
 }
 
 
-void printStudents(struct Student students[], int numberOfStudents) {
+void printStudentDetails(struct Student students[], int numberOfStudents) {
     int index;
     for (index = 0; index < numberOfStudents; ++index) {
         printf("\nRoll No.: %d\n", students[index].rollNumber);
@@ -226,8 +226,8 @@ int main() {
         return 1;
     } 
 
-    inputStudents(students, numberOfStudents);
-    printStudents(students, numberOfStudents);
+    getStudentData(students, numberOfStudents);
+    printStudentDetails(students, numberOfStudents);
 	free(students);
     return 0;
 }
