@@ -24,11 +24,11 @@ struct Student {
 };
 
 typedef enum {
-    GRADE_A,
-    GRADE_B,
-    GRADE_C,
-    GRADE_D,
-    GRADE_F
+    A,
+    B,
+    C,
+    D,
+    F
 } Grade;
 
 
@@ -75,9 +75,9 @@ int isValidName(const char *name) {
     if (name == NULL) return 0;
     int len = (int)strlen(name);
     if (len == 0) return 0;
-    int hasLetter = 0, i;
-    for (i = 0; i < len; ++i) {
-        unsigned char ch = (unsigned char)name[i];
+    int hasLetter = 0, index;
+    for (index = 0; index < len; ++index) {
+        unsigned char ch = (unsigned char)name[index];
         if (isalpha(ch))
             hasLetter = 1;
         else if (ch == ' ' || ch == '\t')
@@ -89,8 +89,8 @@ int isValidName(const char *name) {
 
 float calculateTotal(float marks[], int numberOfSubjects) {
     float total = 0.0f;
-    int i;
-    for (i = 0; i < numberOfSubjects; ++i) total += marks[i];
+    int index;
+    for (index = 0; index < numberOfSubjects; ++index) total += marks[index];
     return total;
 }
 
@@ -99,64 +99,64 @@ float calculateAverage(float total, int numberOfSubjects) {
 }
 
 Grade assignGrade(float averageMarks) {
-    if (averageMarks >= 85.0f) return GRADE_A;
-    else if (averageMarks >= 70.0f) return GRADE_B;
-    else if (averageMarks >= 50.0f) return GRADE_C;
-    else if (averageMarks >= 35.0f) return GRADE_D;
-    else return GRADE_F;
+    if (averageMarks >= 85.0f) return A;
+    else if (averageMarks >= 70.0f) return B;
+    else if (averageMarks >= 50.0f) return C;
+    else if (averageMarks >= 35.0f) return D;
+    else return F;
 }
 
 void displayPerformance(Grade grade) {
     int stars = 0;
     switch (grade) {
-        case GRADE_A: stars = 5; break;
-        case GRADE_B: stars = 4; break;
-        case GRADE_C: stars = 3; break;
-        case GRADE_D: stars = 2; break;
-        case GRADE_F: stars = 0; break;
+        case A: stars = 5; break;
+        case B: stars = 4; break;
+        case C: stars = 3; break;
+        case D: stars = 2; break;
+        case F: stars = 0; break;
     }
-    int i;
-    for (i = 0; i < stars; ++i)
+    int index;
+    for (index = 0; index < stars; ++index)
         putchar('*');
     putchar('\n');
 }
 
 char getGradeLetter(Grade grade) {
     switch (grade) {
-        case GRADE_A: return 'A';
-        case GRADE_B: return 'B';
-        case GRADE_C: return 'C';
-        case GRADE_D: return 'D';
-        default:      return 'F';
+        case A: return 'A';
+        case B: return 'B';
+        case C: return 'C';
+        case D: return 'D';
+        default:return 'F';
     }
 }
 
-void printRollNumbers(int current, int totalStudents) {
-    if (current > totalStudents)
+void printRollNumbers(int currentRollNumber , int numberOfStudents) {
+    if (currentRollNumber > numberOfStudents)
         return;
-    printf("%d ", current);
-    printRollNumbers(current + 1, totalStudents);
+    printf("%d ", currentRollNumber);
+    printRollNumbers(currentRollNumber + 1, numberOfStudents);
 }
 
 
 void inputStudents(struct Student students[], int numberOfStudents) {
     char line[MAX_INPUT_LENGTH];
-    int i, j;
-    for (i = 0; i < numberOfStudents; ++i) {
-        printf("\nEnter details for student %d:\n", i + 1);
+    int index, j;
+    for (index = 0; index < numberOfStudents; ++index) {
+        printf("\nEnter details for student %d:\n", index + 1);
 
         while (1) {
             printf("Roll Number (>0): ");
             readLine(line, sizeof(line));
-            if (parseInt(line, &students[i].rollNumber) && students[i].rollNumber > 0)
+            if (parseInt(line, &students[index].rollNumber) && students[index].rollNumber > 0)
                 break;
             printf("Invalid roll. Roll number must be an integer greater than 0.\n");
         }
 
         while (1) {
             printf("Name (letters and spaces only): ");
-            readLine(students[i].name, sizeof(students[i].name));
-            if (isValidName(students[i].name))
+            readLine(students[index].name, sizeof(students[index].name));
+            if (isValidName(students[index].name))
                 break;
             printf("Invalid name. Use only letters and spaces, at least one letter required.\n");
         }
@@ -165,41 +165,41 @@ void inputStudents(struct Student students[], int numberOfStudents) {
             while (1) {
                 printf("Marks for Subject %d (0-100): ", j + 1);
                 readLine(line, sizeof(line));
-                float m;
-                if (parseFloat(line, &m) && m >= 0.0f && m <= 100.0f) {
-                    students[i].marks[j] = m;
+                float marksEntered;
+                if (parseFloat(line, &marksEntered) && marksEntered >= 0.0f && marksEntered <= 100.0f) {
+                    students[index].marks[j] = marksEntered;
                     break;
                 }
                 printf("Invalid marks. Enter a number between 0 and 100.\n");
             }
         }
 
-        students[i].totalMarks = calculateTotal(students[i].marks, NUMBER_OF_SUBJECTS);
-        students[i].averageMarks = calculateAverage(students[i].totalMarks, NUMBER_OF_SUBJECTS);
-        students[i].studentGrade = getGradeLetter(assignGrade(students[i].averageMarks));
+        students[index].totalMarks = calculateTotal(students[index].marks, NUMBER_OF_SUBJECTS);
+        students[index].averageMarks = calculateAverage(students[index].totalMarks, NUMBER_OF_SUBJECTS);
+        students[index].studentGrade = getGradeLetter(assignGrade(students[index].averageMarks));
     }
 }
 
 
 void printStudents(struct Student students[], int numberOfStudents) {
-    int i;
-    for (i = 0; i < numberOfStudents; ++i) {
-        printf("\nRoll: %d\n", students[i].rollNumber);
-        printf("Name: %s\n", students[i].name);
+    int index;
+    for (index = 0; index < numberOfStudents; ++index) {
+        printf("\nRoll No.: %d\n", students[index].rollNumber);
+        printf("Name: %s\n", students[index].name);
 
-        if (fabsf(students[i].totalMarks - roundf(students[i].totalMarks)) < 1e-6f)
-            printf("Total: %d\n", (int)roundf(students[i].totalMarks));
+        if (fabsf(students[index].totalMarks - roundf(students[index].totalMarks)) < 1e-6f)
+            printf("Total: %d\n", (int)roundf(students[index].totalMarks));
         else
-            printf("Total: %.2f\n", students[i].totalMarks);
+            printf("Total: %.2f\n", students[index].totalMarks);
 
-        printf("Average: %.2f\n", students[i].averageMarks);
-        printf("Grade: %c\n", students[i].studentGrade);
+        printf("Average Marks of student in the three subjects: %.2f\n", students[index].averageMarks);
+        printf("Grade of the student: %c\n", students[index].studentGrade);
 
-        if (students[i].averageMarks < 35.0f)
+        if (students[index].averageMarks < 35.0f)
             continue;
 
         printf("Performance: ");
-        displayPerformance(assignGrade(students[i].averageMarks));
+        displayPerformance(assignGrade(students[index].averageMarks));
     }
 
     printf("\nList of Roll Numbers (via recursion): ");
@@ -209,21 +209,25 @@ void printStudents(struct Student students[], int numberOfStudents) {
 
 
 int main() {
-    struct Student students[MAX_STUDENTS];
     char line[MAX_INPUT_LENGTH];
     int numberOfStudents = 0;
 
     while (1) {
-        printf("Enter number of students (1-%d): ", MAX_STUDENTS);
+        printf("Enter number of students whose details you want to enter  (1-%d): ", MAX_STUDENTS);
         readLine(line, sizeof(line));
         if (parseInt(line, &numberOfStudents) && numberOfStudents >= 1 && numberOfStudents <= MAX_STUDENTS)
             break;
         printf("Invalid input. Please enter an integer between 1 and %d.\n", MAX_STUDENTS);
     }
+    
+    struct Student *students = (struct Student *)calloc(numberOfStudents, sizeof(struct Student));
+    if (students == NULL) {
+        printf("Memory Allocation Failed\n");
+        return 1;
+    } 
 
     inputStudents(students, numberOfStudents);
     printStudents(students, numberOfStudents);
-
+	free(students);
     return 0;
 }
-
