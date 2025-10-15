@@ -208,7 +208,7 @@ void printStudents(struct Student students[], int numberOfStudents) {
 }
 
 
-int main(void) {
+int main() {
     struct Student students[MAX_STUDENTS];
     char line[MAX_INPUT_LENGTH];
     int numberOfStudents = 0;
@@ -226,3 +226,4 @@ int main(void) {
 
     return 0;
 }
+
