@@ -3,6 +3,7 @@
 #include <time.h>
 
 #define MAX_INTENSITY_VALUE 256
+#define ROUND_OFF_FACTOR 0.5
 
 static inline int* getPointerAccess(int *basePointerToMatrix, int sizeOfMatrix, int rowIndex, int columnIndex) {
     return (basePointerToMatrix + (rowIndex * sizeOfMatrix + columnIndex));
@@ -68,7 +69,7 @@ void applySmoothingFilter(int *matrix, int sizeOfMatrix) {
     for (currentRowIndex = 0; currentRowIndex < sizeOfMatrix; currentRowIndex++) {
         for (currentColumnIndex = 0; currentColumnIndex < sizeOfMatrix; currentColumnIndex++) {
             int sumOfValues = 0;
-            int countOfValues = 0;
+            double countOfValues = 0.0;
 
             for (neighbourRowIndex = currentRowIndex - 1; neighbourRowIndex <= currentRowIndex + 1; neighbourRowIndex++) {
                 for (neighbourColumnIndex = currentColumnIndex - 1; neighbourColumnIndex <= currentColumnIndex + 1; neighbourColumnIndex++) {
@@ -81,7 +82,7 @@ void applySmoothingFilter(int *matrix, int sizeOfMatrix) {
                 }
             }
 
-            int averageOfValues = (int)(sumOfValues / countOfValues);
+            int averageOfValues = (int)(sumOfValues / countOfValues + ROUND_OFF_FACTOR);
             *getPointerAccess(temporaryValues, sizeOfMatrix, currentRowIndex, currentColumnIndex) = averageOfValues; 
         }
     }
