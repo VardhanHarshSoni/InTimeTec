@@ -21,8 +21,9 @@ void generateMatrix(int *matrix, int sizeOfMatrix) {
 void displayMatrix(int *matrix, int sizeOfMatrix) {
     int currentRowIndex, currentColumnIndex;
     for (currentRowIndex = 0; currentRowIndex < sizeOfMatrix; currentRowIndex++) {
+    	int *rowPtr = matrix + currentRowIndex * sizeOfMatrix;
         for (currentColumnIndex = 0; currentColumnIndex < sizeOfMatrix; currentColumnIndex++) {
-            printf("%5d", *getPointerAccess(matrix, sizeOfMatrix, currentRowIndex, currentColumnIndex));
+            printf("%5d", *(rowPtr + currentColumnIndex));
         }
         printf("\n");
     }
@@ -36,7 +37,7 @@ void rotateMatrixClockwise(int *matrix, int sizeOfMatrix) {
     for (currentRowIndex = 0; currentRowIndex < sizeOfMatrix; currentRowIndex++) {
         for (currentColumnIndex = currentRowIndex + 1; currentColumnIndex < sizeOfMatrix; currentColumnIndex++) {
             int *transposePointer1 = getPointerAccess(matrix, sizeOfMatrix, currentRowIndex, currentColumnIndex);
-            int *transposePointer2 = getPointerAccess(matrix, sizeOfMatrix, currentColumnIndex, currentRowIndex);
+            int *transposePointer2 = getPointerAccess(matrix, sizeOfMatrix, currentColumnIndex, currentRowIndex); 
             tempVariable = *transposePointer1;
             *transposePointer1 = *transposePointer2;
             *transposePointer2 = tempVariable;
