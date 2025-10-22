@@ -4,6 +4,8 @@
 
 #define MAX_INTENSITY_VALUE 256
 #define ROUND_OFF_FACTOR 0.5
+#define MIN_MATRIX_SIZE 2
+#define MAX_MATRIX_SIZE 10
 
 static inline int* getPointerAccess(int *basePointerToMatrix, int sizeOfMatrix, int rowIndex, int columnIndex) {
     return (basePointerToMatrix + (rowIndex * sizeOfMatrix + columnIndex));
@@ -59,11 +61,11 @@ void rotateMatrixClockwise(int *matrix, int sizeOfMatrix) {
 }
 
 
-void applySmoothingFilter(int *matrix, int sizeOfMatrix) {
+int applySmoothingFilter(int *matrix, int sizeOfMatrix) {
     int *temporaryValues = (int *)calloc(sizeOfMatrix * sizeOfMatrix, sizeof(int));
     if (temporaryValues == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
-        return;
+        return 0;
     }
     int currentRowIndex, currentColumnIndex, neighbourRowIndex, neighbourColumnIndex;
 
@@ -93,13 +95,14 @@ void applySmoothingFilter(int *matrix, int sizeOfMatrix) {
         *(matrix + currentRowIndex) = *(temporaryValues + currentRowIndex);
     }
     free(temporaryValues); 
+    return 1;
 }
 
 
 int main() {
     int sizeOfMatrix;
     printf("Enter size of the matrix (2-10): ");
-    if (scanf("%d", &sizeOfMatrix) != 1 || sizeOfMatrix < 2 || sizeOfMatrix > 10) {
+    if (scanf("%d", &sizeOfMatrix) != 1 || sizeOfMatrix < MIN_MATRIX_SIZE || sizeOfMatrix > MAX_MATRIX_SIZE) {
         printf("Invalid! Please enter an integer value between 2 and 10\n");
         return 1;
     }
@@ -120,6 +123,10 @@ int main() {
 
     printf("\nMatrix after Applying 3*3 Smoothing Filter:\n");
     applySmoothingFilter(matrix, sizeOfMatrix);
+    
+    if(applySmoothingFilter(matrix, sizeOfMatrix) == 0){
+    	fprintf(stderr, "Smoothing filter could not be applied due to memory error.\n");
+	}
     displayMatrix(matrix, sizeOfMatrix);
     
     free(matrix);
