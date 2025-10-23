@@ -122,7 +122,7 @@ int main() {
     displayMatrix(matrix, sizeOfMatrix);
 
     printf("\nMatrix after Applying 3*3 Smoothing Filter:\n");
-    applySmoothingFilter(matrix, sizeOfMatrix);
+
     
     if(applySmoothingFilter(matrix, sizeOfMatrix) == 0){
     	fprintf(stderr, "Smoothing filter could not be applied due to memory error.\n");
@@ -132,3 +132,4 @@ int main() {
     free(matrix);
     return 0;
 }
+
